@@ -2,7 +2,7 @@ TODO: Improve this text.
 
 # Rack::ESI
 
-Rack::ESI is an implementation of a small (but still very useful!) subset of [ESI][]. It allows you to _easily_ cache the static part of dynamic pages when used together with [Ryan Tomayko's Rack::Cache][Rack::Cache].
+Rack::ESI is an implementation of a small (but still very useful!) subset of [ESI][]. It allows you to _easily_ cache everything but the user-customized parts of your dynamic pages when used together with [Ryan Tomayko's Rack::Cache][Rack::Cache].
 
 Development of Rails::ESI has just begun and it is not yet ready for anything but exploration.
 
@@ -16,4 +16,3 @@ Development of Rails::ESI has just begun and it is not yet ready for anything bu
 ## TODO/FIXME
 
 `grep`/`ack` for TODOs and FIXMEs.
-    
