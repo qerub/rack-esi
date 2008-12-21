@@ -16,7 +16,7 @@ class Rack::ESI
 
     body = process_body(unprocessed_body)
 
-    return original_response unless body.include?("<esi:") 
+    return original_response unless body.include?("<esi:")
 
     xml = Hpricot.XML(body)
 
@@ -34,14 +34,14 @@ class Rack::ESI
 
     # TODO
     # xml.search("esi:remove") do |remove_element|
-    # 
+    #
     # end
 
     [status, headers, [xml.to_s]]
   end
-  
+
   private
-  
+
   def process_body(unprocessed_body)
     parts = []
     unprocessed_body.each { |part| parts << part }
