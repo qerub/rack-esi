@@ -18,7 +18,9 @@ Development of Rails::ESI has just begun and it is not yet ready for anything bu
 With [Rack::Cache][]:
 
     rackup examples/basic_example_application_with_caching.ru
-    
-## TODO/FIXME
 
-`grep`/`ack` for TODOs and FIXMEs.
+## TODOs and FIXMEs
+
+    rake tasks        # Show TODOs and FIXMEs
+    rake tasks:fixme  # Show FIXMEs
+    rake tasks:todo   # Show TODOs

@@ -32,10 +32,9 @@ class Rack::ESI
       end
     end
 
-    # TODO
-    # xml.search("esi:remove") do |remove_element|
-    #
-    # end
+    # TODO: xml.search("esi:remove") do |remove_element|
+    # TODO:
+    # TODO: end
 
     [status, headers, [xml.to_s]]
   end
