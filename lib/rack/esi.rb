@@ -34,6 +34,8 @@ class Rack::ESI
 
     xml.search("esi:remove").remove
 
+    xml.search("esi:comment").remove
+
     [status, headers, [xml.to_s]]
   end
 

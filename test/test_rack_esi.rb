@@ -64,6 +64,18 @@ class TestRackESI < Test::Unit::TestCase
     assert_equal(expected_body, actual_body)
   end
 
+  def test_comment
+    mock_app = const([200, {"Content-Type" => "text/xml"}, ["<p>(<esi:comment text='*'/>)</p>"]])
+
+    esi_app = Rack::ESI.new(mock_app)
+
+    expected_body = ["<p>()</p>"]
+
+    actual_body = esi_app.call("SCRIPT_NAME" => "", "PATH_INFO" => "/")[2]
+
+    assert_equal(expected_body, actual_body)
+  end
+
   private
 
   def const(value)
