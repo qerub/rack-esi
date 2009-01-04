@@ -28,7 +28,7 @@ class TestRackESI < Test::Unit::TestCase
     assert_same_response(mock_app, esi_app)
   end
 
-  def test_inclusion
+  def test_include
     app = Rack::URLMap.new({
       "/"       => const([200, {"Content-Type" => "text/xml"}, ["<esi:include src='/header'/>, Index"]]),
       "/header" => const([200, {"Content-Type" => "text/xml"}, ["Header"]])
@@ -52,7 +52,7 @@ class TestRackESI < Test::Unit::TestCase
     end
   end
 
-  def test_removal
+  def test_remove
     mock_app = const([200, {"Content-Type" => "text/xml"}, ["<p>Hei! <esi:remove>Hei! </esi:remove>Hei!</p>"]])
 
     esi_app = Rack::ESI.new(mock_app)
