@@ -11,6 +11,10 @@ It allows you to _easily_ cache everything but the user-customized parts of your
 
 Development of Rails::ESI has just begun and it is not yet ready for anything but exploration.
 
+## Supported Statements
+
+* `<esi:include src="..."/>` where `src` is a relative URL to be handled by the Rack application.
+
 ## Examples
 
     rackup examples/basic_example_application.ru
