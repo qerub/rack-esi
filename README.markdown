@@ -14,6 +14,7 @@ Development of Rails::ESI has just begun and it is not yet ready for anything bu
 ## Supported Statements
 
 * `<esi:include src="..."/>` where `src` is a relative URL to be handled by the Rack application.
+* `<esi:remove>...</esi:remove>`
 
 ## Examples
 

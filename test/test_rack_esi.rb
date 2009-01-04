@@ -52,6 +52,18 @@ class TestRackESI < Test::Unit::TestCase
     end
   end
 
+  def test_removal
+    mock_app = const([200, {"Content-Type" => "text/xml"}, ["<p>Hei! <esi:remove>Hei! </esi:remove>Hei!</p>"]])
+
+    esi_app = Rack::ESI.new(mock_app)
+
+    expected_body = ["<p>Hei! Hei!</p>"]
+
+    actual_body = esi_app.call("SCRIPT_NAME" => "", "PATH_INFO" => "/")[2]
+
+    assert_equal(expected_body, actual_body)
+  end
+
   private
 
   def const(value)
