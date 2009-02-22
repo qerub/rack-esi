@@ -16,4 +16,5 @@ use Rack::Cache,
   :metastore   => "heap:/",
   :entitystore => "heap:/"
 
+use Rack::ContentLength
 run BasicExampleApplication.new

@@ -10,4 +10,5 @@ use Rack::ShowExceptions
 use Rack::ESI
 use Rack::CommonLogger
 
+use Rack::ContentLength
 run BasicExampleApplication.new
