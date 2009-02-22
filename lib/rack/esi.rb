@@ -36,7 +36,10 @@ class Rack::ESI
 
     xml.search("esi:comment").remove
 
-    [status, headers, [xml.to_s]]
+    processed_body = xml.to_s
+    processed_headers = headers.merge("Content-Length" => processed_body.size.to_s)
+
+    [status, processed_headers, [processed_body]]
   end
 
   private

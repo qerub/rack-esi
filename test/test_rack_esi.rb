@@ -76,6 +76,16 @@ class TestRackESI < Test::Unit::TestCase
     assert_equal(expected_body, actual_body)
   end
 
+  def test_setting_of_content_length
+    mock_app = const([200, {"Content-Type" => "text/html"}, ["Osameli. <esi:comment text='*'/>"]])
+
+    esi_app = Rack::ESI.new(mock_app)
+
+    response = esi_app.call("SCRIPT_NAME" => "", "PATH_INFO" => "/")
+
+    assert_equal("9", response[1]["Content-Length"])
+  end
+
   private
 
   def const(value)
