@@ -10,11 +10,11 @@ class Rack::ESI
   end
 
   def call(env)
-    status, headers, unprocessed_body = original_response = @app.call(env)
+    status, headers, enumerable_body = original_response = @app.call(env)
 
     return original_response unless headers["Content-Type"].to_s.match(/(ht|x)ml/) # FIXME: Use another pattern
 
-    body = process_body(unprocessed_body)
+    body = process_body(enumerable_body)
 
     return original_response unless body.include?("<esi:")
 
@@ -41,9 +41,9 @@ class Rack::ESI
 
   private
 
-  def process_body(unprocessed_body)
+  def process_body(enumerable_body)
     parts = []
-    unprocessed_body.each { |part| parts << part }
+    enumerable_body.each { |part| parts << part }
     return parts.join("")
   end
 end
