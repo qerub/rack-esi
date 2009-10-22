@@ -9,7 +9,7 @@ Rack::ESI is an implementation of a small (but still very useful!) subset of [ES
 
 It allows you to _easily_ cache everything but the user-customized parts of your dynamic pages without leaving the comfortable world of Ruby when used together with [Ryan Tomayko's Rack::Cache][Rack::Cache].
 
-Development of Rails::ESI has just begun and it is not yet ready for anything but exploration.
+Development of Rack::ESI has just begun and it is not yet ready for anything but exploration.
 
 ## Currently Supported Expressions
 
