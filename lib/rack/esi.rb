@@ -1,5 +1,5 @@
 require "rack"
-require "hpricot"
+require "nokogiri"
 
 class Rack::ESI
   class Error < ::RuntimeError
@@ -18,9 +18,9 @@ class Rack::ESI
 
     return original_response unless body.include?("<esi:")
 
-    xml = Hpricot.XML(body)
-
-    xml.search("esi:include") do |include_element|
+    xml = Nokogiri.XML(body)
+    
+    xml.search("//esi:include").each do |include_element|
       raise(Error, "esi:include without @src") unless include_element["src"]
       raise(Error, "esi:include[@src] must be absolute") unless include_element["src"][0] == ?/
       
@@ -41,15 +41,15 @@ class Rack::ESI
       
       raise(Error, "#{include_element["src"]} request failed (code: #{include_status})") unless include_status == 200
       
-      new_element = Hpricot::Text.new(join_body(include_body))
-      include_element.parent.replace_child(include_element, new_element)
+      new_element = Nokogiri.XML(join_body(include_body)).root
+      include_element.replace(new_element)
     end
 
-    xml.search("esi:remove").remove
+    xml.search("//esi:remove").remove
 
-    xml.search("esi:comment").remove
+    xml.search("//esi:comment").remove
 
-    processed_body = xml.to_s
+    processed_body = remove_xml_stuff(xml.to_s)
     
     # TODO: Test this
     processed_headers = headers.merge({
@@ -69,5 +69,11 @@ class Rack::ESI
     parts = []
     enumerable_body.each { |part| parts << part }
     return parts.join("")
+  end
+  
+  def remove_xml_stuff(string)
+    string.
+      gsub(/\A<\?xml version="1.0"\?>/, "").
+      gsub(/ xmlns:esi=(?:"[^"]*"|'[^']*')/, "")
   end
 end
