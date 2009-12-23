@@ -21,15 +21,13 @@ class Rack::ESI
     xml = Hpricot.XML(body)
 
     xml.search("esi:include") do |include_element|
-      if src = include_element["src"]
-        path_info = src                                     # TODO: Rewrite the URL to allow more than absolute paths
-        inclusion_env = env.merge("PATH_INFO" => path_info) # TODO: Do something with SCRIPT_NAME/REQUEST_PATH/REQUEST_URI
-        data = process_body(@app.call(inclusion_env)[2])    # FIXME: Check the status
-        new_element = Hpricot::Text.new(data)
-        include_element.parent.replace_child(include_element, new_element)
-      else
-        raise Error, "<esi:include .../> element without @src"
-      end
+      raise(Error, "<esi:include .../> element without @src") unless include_element["src"]
+      
+      path_info = include_element["src"]                  # TODO: Rewrite the URL to allow more than absolute paths
+      inclusion_env = env.merge("PATH_INFO" => path_info) # TODO: Do something with SCRIPT_NAME/REQUEST_PATH/REQUEST_URI
+      data = process_body(@app.call(inclusion_env)[2])    # FIXME: Check the status
+      new_element = Hpricot::Text.new(data)
+      include_element.parent.replace_child(include_element, new_element)
     end
 
     xml.search("esi:remove").remove
