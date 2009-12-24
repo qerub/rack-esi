@@ -8,21 +8,21 @@ require "rack/esi"
 
 class TestRackESI < Test::Unit::TestCase
   def test_response_passthrough
-    mock_app = const([200, {}, ["Hei!"]])
+    mock_app = lambda { [200, {}, ["Hei!"]] }
     esi_app = Rack::ESI.new(mock_app)
 
     assert_same_response(mock_app, esi_app)
   end
 
   def test_xml_response_passthrough
-    mock_app = const([200, {"Content-Type" => "text/xml"}, ["<p>Hei!</p>"]])
+    mock_app = lambda { [200, {"Content-Type" => "text/xml"}, ["<p>Hei!</p>"]] }
     esi_app = Rack::ESI.new(mock_app)
 
     assert_same_response(mock_app, esi_app)
   end
 
   def test_respect_for_content_type
-    mock_app = const([200, {"Content-Type" => "application/x-y-z"}, ["<esi:include src='/header'/><p>Hei!</p>"]])
+    mock_app = lambda { [200, {"Content-Type" => "application/x-y-z"}, ["<esi:include src='/header'/><p>Hei!</p>"]] }
     esi_app = Rack::ESI.new(mock_app)
 
     assert_same_response(mock_app, esi_app)
@@ -30,8 +30,8 @@ class TestRackESI < Test::Unit::TestCase
 
   def test_include
     app = Rack::URLMap.new({
-      "/"       => const([200, {"Content-Type" => "text/xml"}, ["<esi:include src='/header'/>, Index"]]),
-      "/header" => const([200, {"Content-Type" => "text/xml"}, ["Header"]])
+      "/"       => lambda { [200, {"Content-Type" => "text/xml"}, ["<esi:include src='/header'/>, Index"]] },
+      "/header" => lambda { [200, {"Content-Type" => "text/xml"}, ["Header"]] }
     })
 
     esi_app = Rack::ESI.new(app)
@@ -44,7 +44,7 @@ class TestRackESI < Test::Unit::TestCase
   end
 
   def test_invalid_include_element_exception
-    mock_app = const([200, {"Content-Type" => "text/xml"}, ["<esi:include/>"]])
+    mock_app = lambda { [200, {"Content-Type" => "text/xml"}, ["<esi:include/>"]] }
     esi_app = Rack::ESI.new(mock_app)
 
     assert_raise Rack::ESI::Error do
@@ -53,7 +53,7 @@ class TestRackESI < Test::Unit::TestCase
   end
 
   def test_relative_include
-    mock_app = const([200, {"Content-Type" => "text/xml"}, ["<esi:include src='tjoho'/>"]])
+    mock_app = lambda { [200, {"Content-Type" => "text/xml"}, ["<esi:include src='tjoho'/>"]] }
     esi_app = Rack::ESI.new(mock_app)
 
     assert_raise Rack::ESI::Error do
@@ -63,8 +63,8 @@ class TestRackESI < Test::Unit::TestCase
   
   def test_check_of_status_code
     app = Rack::URLMap.new({
-      "/"     => const([200, {"Content-Type" => "text/xml"}, ["<esi:include src='/fail'/>"]]),
-      "/fail" => const([500, {"Content-Type" => "text/xml"}, [":-("]])
+      "/"     => lambda { [200, {"Content-Type" => "text/xml"}, ["<esi:include src='/fail'/>"]] },
+      "/fail" => lambda { [500, {"Content-Type" => "text/xml"}, [":-("]] }
     })
 
     esi_app = Rack::ESI.new(app)
@@ -75,7 +75,7 @@ class TestRackESI < Test::Unit::TestCase
   end
 
   def test_remove
-    mock_app = const([200, {"Content-Type" => "text/xml"}, ["<p>Hei! <esi:remove>Hei! </esi:remove>Hei!</p>"]])
+    mock_app = lambda { [200, {"Content-Type" => "text/xml"}, ["<p>Hei! <esi:remove>Hei! </esi:remove>Hei!</p>"]] }
 
     esi_app = Rack::ESI.new(mock_app)
 
@@ -87,7 +87,7 @@ class TestRackESI < Test::Unit::TestCase
   end
 
   def test_comment
-    mock_app = const([200, {"Content-Type" => "text/xml"}, ["<p>(<esi:comment text='*'/>)</p>"]])
+    mock_app = lambda { [200, {"Content-Type" => "text/xml"}, ["<p>(<esi:comment text='*'/>)</p>"]] }
 
     esi_app = Rack::ESI.new(mock_app)
 
@@ -99,7 +99,7 @@ class TestRackESI < Test::Unit::TestCase
   end
 
   def test_setting_of_content_length
-    mock_app = const([200, {"Content-Type" => "text/html"}, ["Osameli. <esi:comment text='*'/>"]])
+    mock_app = lambda { [200, {"Content-Type" => "text/html"}, ["Osameli. <esi:comment text='*'/>"]] }
 
     esi_app = Rack::ESI.new(mock_app)
 
@@ -108,17 +108,10 @@ class TestRackESI < Test::Unit::TestCase
     assert_equal("9", response[1]["Content-Length"])
   end
 
-  private
+  def assert_same_response(a, b, env = {})
+    x = a.call(env)
+    y = b.call(env)
 
-  def const(value)
-    lambda { |*_| value }
-  end
-
-  def assert_same_response(a, b)
-    x = a.call({})
-    y = b.call({})
-
-    assert_equal(x,           y)
-    assert_equal(x.object_id, y.object_id)
+    assert_equal(x, y)
   end
 end
