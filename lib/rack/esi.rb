@@ -21,7 +21,7 @@ class Rack::ESI
     xml = Hpricot.XML(body)
 
     xml.search("esi:include") do |include_element|
-      raise(Error, "<esi:include .../> element without @src") unless include_element["src"]
+      raise(Error, "esi:include without @src") unless include_element["src"]
       raise(Error, "esi:include[@src] must be absolute") unless include_element["src"][0] == ?/
 
       # FIXME: Check the status of @app.call
