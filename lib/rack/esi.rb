@@ -22,8 +22,8 @@ class Rack::ESI
 
     xml.search("esi:include") do |include_element|
       raise(Error, "<esi:include .../> element without @src") unless include_element["src"]
-      
-      # TODO: Rewrite the URL to allow more than absolute paths
+      raise(Error, "esi:include[@src] must be absolute") unless include_element["src"][0] == ?/
+
       # FIXME: Check the status of @app.call
       
       src = include_element["src"]

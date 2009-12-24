@@ -13,7 +13,7 @@ Development of Rack::ESI has just begun and it is not yet ready for anything but
 
 ## Currently Supported Expressions
 
-* `<esi:include src="..."/>` where `src` is a relative URL to be handled by the Rack application.
+* `<esi:include src="/..."/>` where `src` is an absolute path to be handled by the Rack application.
 * `<esi:remove>...</esi:remove>`
 * `<esi:comment text="..."/>`
 

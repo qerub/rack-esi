@@ -52,6 +52,15 @@ class TestRackESI < Test::Unit::TestCase
     end
   end
 
+  def test_relative_include
+    mock_app = const([200, {"Content-Type" => "text/xml"}, ["<esi:include src='tjoho'/>"]])
+    esi_app = Rack::ESI.new(mock_app)
+
+    assert_raise Rack::ESI::Error do
+      esi_app.call({})
+    end
+  end
+
   def test_remove
     mock_app = const([200, {"Content-Type" => "text/xml"}, ["<p>Hei! <esi:remove>Hei! </esi:remove>Hei!</p>"]])
 
