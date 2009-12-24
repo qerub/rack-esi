@@ -14,7 +14,7 @@ class Rack::ESI
 
     return original_response unless headers["Content-Type"].to_s.match(/(ht|x)ml/) # FIXME: Use another pattern
 
-    body = process_body(enumerable_body)
+    body = join_body(enumerable_body)
 
     return original_response unless body.include?("<esi:")
 
@@ -37,7 +37,7 @@ class Rack::ESI
         "SCRIPT_NAME"    => ""
       })
       
-      data = process_body(@app.call(inclusion_env)[2])
+      data = join_body(@app.call(inclusion_env)[2])
       new_element = Hpricot::Text.new(data)
       include_element.parent.replace_child(include_element, new_element)
     end
@@ -54,7 +54,7 @@ class Rack::ESI
 
   private
 
-  def process_body(enumerable_body)
+  def join_body(enumerable_body)
     parts = []
     enumerable_body.each { |part| parts << part }
     return parts.join("")
