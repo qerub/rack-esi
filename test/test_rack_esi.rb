@@ -11,21 +11,21 @@ class TestRackESI < Test::Unit::TestCase
     mock_app = lambda { [200, {}, ["Hei!"]] }
     esi_app = Rack::ESI.new(mock_app)
 
-    assert_same_response(mock_app, esi_app)
+    assert_equal_response(mock_app, esi_app)
   end
 
   def test_xml_response_passthrough
     mock_app = lambda { [200, {"Content-Type" => "text/xml"}, ["<p>Hei!</p>"]] }
     esi_app = Rack::ESI.new(mock_app)
 
-    assert_same_response(mock_app, esi_app)
+    assert_equal_response(mock_app, esi_app)
   end
 
   def test_respect_for_content_type
     mock_app = lambda { [200, {"Content-Type" => "application/x-y-z"}, ["<esi:include src='/header'/><p>Hei!</p>"]] }
     esi_app = Rack::ESI.new(mock_app)
 
-    assert_same_response(mock_app, esi_app)
+    assert_equal_response(mock_app, esi_app)
   end
 
   def test_include
@@ -108,7 +108,7 @@ class TestRackESI < Test::Unit::TestCase
     assert_equal("9", response[1]["Content-Length"])
   end
 
-  def assert_same_response(a, b, env = {})
+  def assert_equal_response(a, b, env = {})
     x = a.call(env)
     y = b.call(env)
 
