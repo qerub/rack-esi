@@ -23,8 +23,6 @@ class Rack::ESI
     xml.search("esi:include") do |include_element|
       raise(Error, "esi:include without @src") unless include_element["src"]
       raise(Error, "esi:include[@src] must be absolute") unless include_element["src"][0] == ?/
-
-      # FIXME: Check the status of @app.call
       
       src = include_element["src"]
       
@@ -37,8 +35,11 @@ class Rack::ESI
         "SCRIPT_NAME"    => ""
       })
       
-      data = join_body(@app.call(inclusion_env)[2])
-      new_element = Hpricot::Text.new(data)
+      include_status, include_headers, include_body = include_response = @app.call(include_env)
+      
+      raise(Error, "#{include_element["src"]} request failed (code: #{include_status})") unless include_status == 200
+      
+      new_element = Hpricot::Text.new(join_body(include_body))
       include_element.parent.replace_child(include_element, new_element)
     end
 

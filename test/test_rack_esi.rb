@@ -60,6 +60,19 @@ class TestRackESI < Test::Unit::TestCase
       esi_app.call({})
     end
   end
+  
+  def test_check_of_status_code
+    app = Rack::URLMap.new({
+      "/"     => const([200, {"Content-Type" => "text/xml"}, ["<esi:include src='/fail'/>"]]),
+      "/fail" => const([500, {"Content-Type" => "text/xml"}, [":-("]])
+    })
+
+    esi_app = Rack::ESI.new(app)
+
+    assert_raise Rack::ESI::Error do
+      esi_app.call("SCRIPT_NAME" => "", "PATH_INFO" => "/")
+    end
+  end
 
   def test_remove
     mock_app = const([200, {"Content-Type" => "text/xml"}, ["<p>Hei! <esi:remove>Hei! </esi:remove>Hei!</p>"]])
