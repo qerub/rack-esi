@@ -25,15 +25,17 @@ class Rack::ESI
       raise(Error, "esi:include[@src] must be absolute") unless include_element["src"][0] == ?/
       
       src = include_element["src"]
-      
+
+      # TODO: Test this      
       include_env = env.merge({
         "PATH_INFO"      => src,
         "QUERY_STRING"   => "",
         "REQUEST_METHOD" => "GET",
-        "REQUEST_PATH"   => src,
-        "REQUEST_URI"    => src,
         "SCRIPT_NAME"    => ""
       })
+      include_env.delete("HTTP_ACCEPT_ENCODING")
+      include_env.delete("REQUEST_PATH")
+      include_env.delete("REQUEST_URI")
       
       include_status, include_headers, include_body = include_response = @app.call(include_env)
       
