@@ -50,7 +50,15 @@ class Rack::ESI
     xml.search("esi:comment").remove
 
     processed_body = xml.to_s
-    processed_headers = headers.merge("Content-Length" => processed_body.size.to_s)
+    
+    # TODO: Test this
+    processed_headers = headers.merge({
+      "Content-Length" => processed_body.size.to_s,
+      "Cache-Control"  => "private, max-age=0, must-revalidate"
+    })    
+    processed_headers.delete("Expires")
+    processed_headers.delete("Last-Modified")
+    processed_headers.delete("ETag")    
 
     [status, processed_headers, [processed_body]]
   end
