@@ -1,15 +1,9 @@
 [ESI]: http://www.w3.org/TR/esi-lang
 [Rack::Cache]: http://tomayko.com/src/rack-cache/
 
-TODO: Improve this text.
-
 # Rack::ESI
 
-Rack::ESI is an implementation of a small (but still very useful!) subset of [ESI][].
-
-It allows you to _easily_ cache everything but the user-customized parts of your dynamic pages without leaving the comfortable world of Ruby when used together with [Ryan Tomayko's Rack::Cache][Rack::Cache].
-
-Development of Rack::ESI has just begun and it is not yet ready for anything but exploration.
+Rack::ESI is an implementation of a small (but still very useful!) subset of [ESI][] (Edge Side Includes). ESI tackles the problem of caching dynamic web content by recognizing that some content parts are static (at least for a while) and thereby cachable. Rack::ESI's primary raison d'être is to act as a substitue for real ESI processors during application development to keep your software setup simple. However, it can also be used standalone in production together with [Ryan Tomayko's Rack::Cache][Rack::Cache] to enable caching without leaving the rosy world of Ruby.
 
 ## Currently Supported Expressions
 
@@ -24,9 +18,3 @@ Development of Rack::ESI has just begun and it is not yet ready for anything but
 With [Rack::Cache][]:
 
     rackup examples/basic_example_application_with_caching.ru
-
-## TODOs and FIXMEs
-
-    rake tasks        # Show TODOs and FIXMEs
-    rake tasks:fixme  # Show FIXMEs
-    rake tasks:todo   # Show TODOs
