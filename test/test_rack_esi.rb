@@ -108,6 +108,22 @@ class TestRackESI < Test::Unit::TestCase
     assert_equal("9", response[1]["Content-Length"])
   end
 
+  def test_recursive_inclusions
+    app = Rack::URLMap.new({
+      "/a" => lambda { [200, {"Content-Type" => "text/xml"}, ["A<esi:include src='/b'/>"]] },
+      "/b" => lambda { [200, {"Content-Type" => "text/xml"}, ["B<esi:include src='/c'/>"]] },
+      "/c" => lambda { [200, {"Content-Type" => "text/xml"}, ["C"]] }
+    })
+
+    esi_app = Rack::ESI.new(app)
+
+    expected_body = ["ABC"]
+
+    actual_body = esi_app.call("SCRIPT_NAME" => "", "PATH_INFO" => "/a")[2]
+
+    assert_equal(expected_body, actual_body)
+  end
+
   def assert_equal_response(a, b, env = {})
     x = a.call(env)
     y = b.call(env)
