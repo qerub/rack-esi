@@ -124,6 +124,19 @@ class TestRackESI < Test::Unit::TestCase
     assert_equal(expected_body, actual_body)
   end
 
+  def test_check_of_recursion_depth
+    app = Rack::URLMap.new({
+      "/a" => lambda { [200, {"Content-Type" => "text/xml"}, ["A<esi:include src='/b'/>"]] },
+      "/b" => lambda { [200, {"Content-Type" => "text/xml"}, ["B<esi:include src='/a'/>"]] },
+    })
+
+    esi_app = Rack::ESI.new(app)
+
+    assert_raise(Rack::ESI::Error) do
+      esi_app.call("SCRIPT_NAME" => "", "PATH_INFO" => "/a")[2]
+    end
+  end
+
   def assert_equal_response(a, b, env = {})
     x = a.call(env)
     y = b.call(env)

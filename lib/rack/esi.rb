@@ -15,7 +15,9 @@ class Rack::ESI
 
   private
 
-  def process_request(env)
+  def process_request(env, level = 0)
+    raise(Error, "Too many levels of ESI processing") if level > 5
+
     status, headers, enumerable_body = original_response = @app.call(env)
 
     return original_response unless headers["Content-Type"].to_s.match(/(ht|x)ml/) # FIXME: Use another pattern
@@ -43,7 +45,7 @@ class Rack::ESI
       include_env.delete("REQUEST_PATH")
       include_env.delete("REQUEST_URI")
       
-      include_status, include_headers, include_body = include_response = process_request(include_env)
+      include_status, include_headers, include_body = include_response = process_request(include_env, level + 1)
       
       raise(Error, "#{include_element["src"]} request failed (code: #{include_status})") unless include_status == 200
       
