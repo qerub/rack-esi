@@ -5,8 +5,9 @@ class Rack::ESI
   class Error < ::RuntimeError
   end
 
-  def initialize(app)
+  def initialize(app, max_depth = 5)
     @app = app
+    @max_depth = max_depth.to_i
   end
 
   def call(env)
@@ -16,7 +17,7 @@ class Rack::ESI
   private
 
   def process_request(env, level = 0)
-    raise(Error, "Too many levels of ESI processing") if level > 5
+    raise(Error, "Too many levels of ESI processing: level #{level} reached") if level > @max_depth
 
     status, headers, enumerable_body = original_response = @app.call(env.dup)
 
