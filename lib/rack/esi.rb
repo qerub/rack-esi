@@ -17,7 +17,7 @@ class Rack::ESI
   private
 
   def process_request(env, level = 0)
-    raise(Error, "Too many levels of ESI processing: level #{level} reached") if level > @max_depth
+    raise(Error, "Too many levels of ESI processing: level #{level} reached. We were about to request: #{env['REQUEST_URI']} // #{env['PATH_INFO']}") if level > @max_depth
 
     status, headers, enumerable_body = original_response = @app.call(env.dup)
 
