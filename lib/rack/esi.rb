@@ -18,7 +18,7 @@ class Rack::ESI
   def process_request(env, level = 0)
     raise(Error, "Too many levels of ESI processing") if level > 5
 
-    status, headers, enumerable_body = original_response = @app.call(env)
+    status, headers, enumerable_body = original_response = @app.call(env.dup)
 
     return original_response unless headers["Content-Type"].to_s.match(/(ht|x)ml/) # FIXME: Use another pattern
 
