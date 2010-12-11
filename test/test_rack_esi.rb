@@ -137,6 +137,14 @@ class TestRackESI < Test::Unit::TestCase
     end
   end
 
+  def test_dup_of_app_env
+    app = lambda { |env| [200, {}, [env.object_id.to_s]] }
+    esi_app = Rack::ESI.new(app)
+
+    env = {}
+    assert_not_equal(env.object_id.to_s, esi_app.call(env)[2][0])
+  end
+
   def assert_equal_response(a, b, env = {})
     x = a.call(env)
     y = b.call(env)
