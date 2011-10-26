@@ -60,7 +60,7 @@ class TestRackESI < Test::Unit::TestCase
       esi_app.call({})
     end
   end
-  
+
   def test_check_of_status_code
     app = Rack::URLMap.new({
       "/"     => lambda { [200, {"Content-Type" => "text/xml"}, ["<esi:include src='/fail'/>"]] },
